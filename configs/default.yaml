@@ -1,0 +1,50 @@
+project:
+  name: seq2seq_attention_nmt_improved
+  seed: 42
+  output_dir: outputs/seq2seq_attention
+
+data:
+  src_path: data/en_sents
+  tgt_path: data/vi_sents
+  num_samples: null
+  val_ratio: 0.1
+  min_freq: 2
+  src_tokenizer: bpe
+  tgt_tokenizer: bpe
+  max_src_len_percentile: 0.95
+  max_tgt_len_percentile: 0.95
+  max_src_len: 80  # fallback fixed length
+  max_tgt_len: 80  # fallback fixed length
+
+model:
+  use_attention: true
+  attention_type: bahdanau
+  embedding_dim: 128
+  hidden_size: 256
+
+training:
+  epochs: 15
+  batch_size: 16
+  optimizer: adamw
+  lr: 0.001
+  grad_clip: 1.0
+  teacher_forcing_start: 0.6
+  teacher_forcing_end: 0.2
+  log_every: 50
+  save_every_epoch: true
+  early_stopping_patience: 5
+  resume: false
+
+scheduler:
+  type: step
+  step_size: 5
+  gamma: 0.5
+  warmup_steps: 5
+
+evaluation:
+  max_eval_samples: 200
+  max_len: 50
+  metrics:
+    - bleu
+    - rouge_l
+    - chrf
